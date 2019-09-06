@@ -4,11 +4,16 @@ strategy:
   matrix:
     linux:
       imageName: 'ubuntu-16.04'
-    mac:
-      imageName: 'macos-10.13'
+    #mac:
+    #  imageName: 'macos-10.13'
     windows:
       imageName: 'vs2017-win2016'
 
+trigger:
+    batch: true
+    branches:
+        include:
+        - master
 pool:
   vmImage: $(imageName)
 
@@ -23,25 +28,41 @@ steps:
 - script: |
     npm install
     npm test
-
+  displayName: 'Install npm'
 - task: PublishTestResults@2
   inputs:
     testResultsFiles: '**/TEST-RESULTS.xml'
     testRunTitle: 'Test results for JavaScript'
+  displayName: 'Publish Test results'
 
 - task: PublishCodeCoverageResults@1
   inputs: 
     codeCoverageTool: Cobertura
     summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
     reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
+  displayName: 'Publish code covrage data'
 
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
     includeRootFolder: false
+  displayName: 'archive files'
 
 - script: echo This is pipeline $(System.DefinitionId)
+  displayName: 'Write ID'
 
 - script: echo This is pipeline $(Example)
+  displayName: 'Write Example'
+
+- bash: |
+    echo "Hello world from $AGENT_NAME running on $AGENT_OS"
+    case $BUILD_REASON in
+            "Manual") echo "$BUILD_REQUESTEDFOR manually queued the build." ;;
+            "IndividualCI") echo "This is a CI build for $BUILD_REQUESTEDFOR." ;;
+            "BatchedCI") echo "This is a batched CI build for $BUILD_REQUESTEDFOR." ;;
+        *) $BUILD_REASON ;;
+    esac
+  displayName: 'Hello world'
 
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish artifact'
