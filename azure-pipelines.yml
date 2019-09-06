@@ -86,6 +86,6 @@ steps:
 # now we use the value, no matter where we got it
 - script: |
     echo The IP address is $(IP_ADDR)
-    
+  displayName: "Print IP address"  
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifact'
