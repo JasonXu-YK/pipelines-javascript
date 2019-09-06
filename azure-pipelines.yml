@@ -12,6 +12,9 @@ strategy:
 pool:
   vmImage: $(imageName)
 
+variables:
+  Example: 'myValue'
+
 steps:
 - task: NodeTool@0
   inputs:
@@ -38,5 +41,7 @@ steps:
     includeRootFolder: false
 
 - script: echo This is pipeline $(System.DefinitionId)
+
+- script: echo This is pipeline $(Example)
 
 - task: PublishBuildArtifacts@1
