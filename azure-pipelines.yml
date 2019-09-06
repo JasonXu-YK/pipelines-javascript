@@ -37,4 +37,6 @@ steps:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
     includeRootFolder: false
 
+- script: echo This is pipeline $(System.DefinitionId)
+
 - task: PublishBuildArtifacts@1
